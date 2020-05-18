@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('dotenv').config({ path: './configurations/dev.env' })
+// require('dotenv').config({ path: './configurations/dev.env' })
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://quizlydb:Mm123456@cluster0-k5tpi.mongodb.net/test?retryWrites=true&w=majority",
     {
@@ -8,3 +8,5 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://quizlydb:Mm123456@clu
     }
 )
 const conn = mongoose.connection;
+mongoose.connection.once('open', () => { console.log('MongoDB Connected'); });
+mongoose.connection.on('error', (err) => { console.log('MongoDB connection error: ', err);

@@ -1,0 +1,38 @@
+{
+  "name": "qgs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node scr/index.js",
+    "dev": "env-cmd -f ./configurations/dev nodemon scr/index.js"
+  },
+  "author": "radwa yasser",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^6.5.4",
+    "bcrypt": "^4.0.0",
+    "cors": "^2.8.5",
+    "countries-and-timezones": "^2.2.0",
+    "date-and-time": "^0.13.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.1",
+    "mongoose-integer": "^0.1.1",
+    "mongoose-unique-validator": "^2.0.3",
+    "multer": "^1.4.2",
+    "node-datetime": "^2.1.2",
+    "nodemailer": "^6.4.6",
+    "request": "^2.88.0",
+    "socket.io": "^2.3.0",
+    "validator": "^12.2.0",
+    "web-push": "^3.4.3"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "nodemon": "^2.0.2"
+  },
+  "keywords": [],
+  "description": ""
+}

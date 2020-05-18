@@ -9,4 +9,4 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://quizlydb:Mm123456@clu
 )
 const conn = mongoose.connection;
 mongoose.connection.once('open', () => { console.log('MongoDB Connected'); });
-mongoose.connection.on('error', (err) => { console.log('MongoDB connection error: ', err);
+

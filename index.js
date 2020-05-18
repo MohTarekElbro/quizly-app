@@ -5,7 +5,13 @@ const path = require("path");
 
 const express = require('express')
 const app = express()
-
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    res.append('Access-Control-Allow-Headers', 'Authorization');
+    next();
+});
 var http = require('http').createServer(app);
 const io = require('socket.io')(http);
 

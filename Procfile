@@ -1,1 +1,1 @@
-web: nodemon dev --unsafe-perm
+web: node dev index.js 

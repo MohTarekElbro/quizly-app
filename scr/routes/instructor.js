@@ -10,7 +10,7 @@ router.post('/instructor/signup', instructorController.idPic.single('idPic'),ins
 
 //Login 
 router.post('/instructor/login',instructorController.Login)  
-router.post('/instructor/test',instructorController.test) 
+router.get('/instructor/test',instructorController.test) 
 
 //upload resources
 router.post('/upload/resources',Auth.Auth,Notify.GetNumberOfNotification,instructorController.resource.single('resource'),instructorController.enterResources)

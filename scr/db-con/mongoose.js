@@ -7,3 +7,4 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://quizlydb:Mm123456@clu
     useCreateIndex:true,
    useFindAndModify:false}
 )
+const conn = mongoose.connection;

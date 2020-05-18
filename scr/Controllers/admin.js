@@ -1,7 +1,7 @@
 const Admin = require('../models/AdminAccount')
 const Instructor=require('../models/instructorAccount')
 const {SendWelcomMessage,Send_Rejection_mail}=require('../mails/sendMails')
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcryptjs')
 const Notification = require('./Notifications')
 
 exports.getAdminEmail= async()=>{

@@ -1,7 +1,7 @@
 const Instructor = require('../models/instructorAccount')
 const { CancelationMail } = require('../mails/sendMails')
 const multer = require('multer')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Request = require('../models/DomainRequests')
 const Notification = require('./Notifications')
 var datetime = require('node-datetime');

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const UniqueValidator = require('mongoose-unique-validator')
 const jwt= require('jsonwebtoken')
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcryptjs')
 const AdminSchema = new mongoose.Schema({
     email:{
         required:true,

@@ -1,8 +1,8 @@
 {
   "name": "qgs",
   "version": "1.0.0",
-  "engines": { 
-    "node": "12.16.1" 
+  "engines": {
+    "node": "12.16.1"
   },
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^6.5.4",
-    "bcrypt": "^4.0.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "countries-and-timezones": "^2.2.0",
     "date-and-time": "^0.13.1",

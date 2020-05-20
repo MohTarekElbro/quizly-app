@@ -6,7 +6,11 @@ const path = require("path");
 const express = require('express')
 const app = express()
 app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+    var allowedOrigins = ['https://realquizly.web.app', 'http://localhost:3000' ];
+    var origin = req.headers.origin;
+    if (allowedOrigins.indexOf(origin) > -1) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.append('Access-Control-Allow-Headers', 'Content-Type');
     res.append('Access-Control-Allow-Headers', 'Authorization');
@@ -92,12 +96,12 @@ http.listen(port, function () {
 
 
 
-io.on('connection',function(socket) {
+io.on('connection', function (socket) {
     socket.on('AddRequest', () => {
         io.emit('Send');
         io.emit('GetNumberOfNotification')
-     });
-  });
+    });
+});
 
 
 

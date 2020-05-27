@@ -5,6 +5,7 @@ const router = new express.Router()
 const Notify=require('../middleware/Notify')
 const multer=require('multer')
 const QuestionController = require('../Controllers/Question')
+const TempQuestions=require('../Controllers/TempQuestions')
 // send Account request 
 router.post('/instructor/signup', instructorController.idPic.single('idPic'),instructorController.Send_SingnUp_Request)
 
@@ -48,7 +49,14 @@ router.post('/instructor/getmyQuestions/:count/:verision',Auth.Auth,instructorCo
 
 //Add Questions
 router.post('/instructor/AddQuestion',Auth.Auth,QuestionController.Add_Questions)
- 
+
+// add temp questions
+router.post('/instructor/AddTempQuestion',Auth.Auth,TempQuestions.Add_Questions)
+
+//get Temp Questions
+router.get('/instructor/GetTempQuestions',Auth.Auth,TempQuestions.GetAndDelete_Questions)
+
+
 
 
 module.exports=router

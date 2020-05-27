@@ -5,7 +5,7 @@ const bcrypt=require('bcryptjs')
 const TempQuestionschema = new mongoose.Schema({
     Questions:{
         required:true,
-        type:String,
+        type:JSON,
         trim:true,
     },
     owner:{

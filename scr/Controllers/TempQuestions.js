@@ -11,7 +11,6 @@ exports.Add_Questions=async(req,res)=>{
             date:datetime.create().now()
                 });
                 Questions.date.setHours(Questions.date.getHours() + 2);
-                Questions.save();
 
         await Questions.save();
         return res.status(201).send(Questions);

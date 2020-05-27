@@ -51,7 +51,7 @@ router.post('/instructor/getmyQuestions/:count/:verision',Auth.Auth,instructorCo
 router.post('/instructor/AddQuestion',Auth.Auth,QuestionController.Add_Questions)
 
 // add temp questions
-router.post('/instructor/AddTempQuestion',Auth.Auth,TempQuestions.Add_Questions)
+router.post('/instructor/AddTempQuestion',TempQuestions.Add_Questions)
 
 //get Temp Questions
 router.get('/instructor/GetTempQuestions',Auth.Auth,TempQuestions.GetAndDelete_Questions)

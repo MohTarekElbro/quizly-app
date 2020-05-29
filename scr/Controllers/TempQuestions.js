@@ -24,7 +24,7 @@ exports.Add_Questions=async(req,res)=>{
 
 
 // Delete Exam
-exports.GetAndDelete_Questions=async(req,res)=>{
+exports.GetTempQuestions=async(req,res)=>{
     try{
         const Questions=await TempQuestion.findOne({owner:req.instructor._id})
         if(!Questions){
@@ -41,6 +41,24 @@ exports.GetAndDelete_Questions=async(req,res)=>{
     }
 
 }
+
+
+exports.Delete_Questions=async(ID)=>{
+    try{
+        const Questions=await TempQuestion.deleteOne({owner:ID})
+        if(!Questions){
+            return 0
+        }
+        return 1
+
+    }catch(e){
+        console.log(e)
+        return 0
+
+    }
+
+}
+
 
 
 

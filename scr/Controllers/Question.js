@@ -7,6 +7,8 @@ const MCQ = require('../models/mcq')
 const DomainController = require('../Controllers/domain')
 const request=require('request')
 const fs=require('fs')
+const TempQuestions=require('../Controllers/TempQuestions')
+const TempRequest = require('../Controllers/TempRequestedInstructors')
 
 //see new edit exist
 exports.CheckEdited = async (myQuestion,id)=>{
@@ -744,7 +746,12 @@ exports.Add_Questions=async (req,res)=>{
             continue
         }
     }
-    res.status(200).send({0:question1,1:question2,2:question3})
+    temp1=await TempQuestions.Delete_Questions(req.instructor._id)
+    temp2=await TempRequest.DeleteRequest(req.instructor._id)
+    if(temp1 == 1 && temp2==1){
+        res.status(200).send({0:question1,1:question2,2:question3,3:false})     
+    }
+    res.status(200).send({0:question1,1:question2,2:question3,3:true})
 }
 catch(e){
     res.status(500).send(e)
@@ -1123,7 +1130,8 @@ exports.generateQuestions=async(req,res)=>{
          // construct object
         let obj={
             'Domain':req.params.domain,
-            'Text':data
+            'Text':data,
+            'owner':req.instructor._id
         }
         if(req.body.hasOwnProperty('Diffculty')&&req.body.Diffculty!=''){
             obj.Diffculty=req.body.Diffculty}
@@ -1132,12 +1140,14 @@ exports.generateQuestions=async(req,res)=>{
                 obj.Distructor=Number(req.body.Distructor)
             }
          //sending data to python
-         const Url='http://localhost:5000/GenerateQuestion/Complete'
-         await request.post({url:Url,json:true,body:"" },(error,response)=>{
+         const Url='https://generatequestion.herokuapp.com/GenerateQuestion/'+type
+         await request.post({url:Url,json:true,body:obj },(error,response)=>{
             if(error){
                 return res.status(404).send(error)
             }
             else{
+                if(response.status_code)
+                await TempRequest.Add_Request(req.instructor._id)
                 return res.status(200).send(response)
             }
          })

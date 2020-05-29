@@ -6,6 +6,9 @@ const Notify=require('../middleware/Notify')
 const multer=require('multer')
 const QuestionController = require('../Controllers/Question')
 const TempQuestions=require('../Controllers/TempQuestions')
+const TempRequest=require('../Controllers/TempRequestedInstructors')
+
+
 // send Account request 
 router.post('/instructor/signup', instructorController.idPic.single('idPic'),instructorController.Send_SingnUp_Request)
 
@@ -56,7 +59,8 @@ router.post('/instructor/AddTempQuestion',TempQuestions.Add_Questions)
 //get Temp Questions
 router.get('/instructor/GetTempQuestions',Auth.Auth,TempQuestions.GetAndDelete_Questions)
 
-
+//get Requestsssss
+router.get('/instructor/GetMyRequest',Auth.Auth,TempRequest.GetRequest)
 
 
 module.exports=router

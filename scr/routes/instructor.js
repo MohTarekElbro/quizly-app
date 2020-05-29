@@ -57,7 +57,7 @@ router.post('/instructor/AddQuestion',Auth.Auth,QuestionController.Add_Questions
 router.post('/instructor/AddTempQuestion',TempQuestions.Add_Questions)
 
 //get Temp Questions
-router.get('/instructor/GetTempQuestions',Auth.Auth,TempQuestions.GetAndDelete_Questions)
+router.get('/instructor/GetTempQuestions',Auth.Auth,TempQuestions.GetTempQuestions)
 
 //get Requestsssss
 router.get('/instructor/GetMyRequest',Auth.Auth,TempRequest.GetRequest)

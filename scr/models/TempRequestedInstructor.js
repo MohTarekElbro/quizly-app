@@ -16,5 +16,5 @@ const TempRequestedInstructorschema = new mongoose.Schema({
 })
 
 
-const TempRequestedInstructor=mongoose.model('TemQuestion',TempRequestedInstructorschema)
+const TempRequestedInstructor=mongoose.model('TempRequest',TempRequestedInstructorschema)
 module.exports=TempRequestedInstructor

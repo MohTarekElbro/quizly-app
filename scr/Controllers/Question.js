@@ -1146,8 +1146,10 @@ exports.generateQuestions=async(req,res)=>{
                 return res.status(404).send(error)
             }
             else{
-                if(response.status_code)
-                await TempRequest.Add_Request(req.instructor._id)
+                if(response.status_code==404){
+                 returnres.state(404).send({'massage':'some information Are Massed'})   
+                }
+               x=  TempRequest.Add_Request(req.instructor._id)
                 return res.status(200).send(response)
             }
          })

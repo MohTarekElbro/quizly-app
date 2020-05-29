@@ -9,6 +9,7 @@ const socket = socketIOClient(ENDPOINT);
 
 //Add New Exam
 exports.Add_Questions=async(req,res)=>{
+    console.log(ENDPOINT)
     try{
         const Questions= new TempQuestion({
             ...req.body,

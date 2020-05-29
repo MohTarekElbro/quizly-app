@@ -101,9 +101,12 @@ io.on('connection', function (socket) {
         io.emit('Send');
         io.emit('GetNumberOfNotification')
     });
+    socket.on('questionsReady',()=>{
+        io.emit('sendQuestions')
+    });
 });
 
-
+module.exports.io=io
 
 
 

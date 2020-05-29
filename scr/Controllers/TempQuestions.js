@@ -2,7 +2,7 @@ const TempQuestion=require('../models/TempQuestion')
 const DomainController=require('../Controllers/domain')
 const instructor=require('./instructor')
 var datetime = require('node-datetime');
-
+const io=require('../../index')
 //Add New Exam
 exports.Add_Questions=async(req,res)=>{
     try{
@@ -12,6 +12,10 @@ exports.Add_Questions=async(req,res)=>{
                 });
         Questions.date.setHours(Questions.date.getHours() + 2);
         await Questions.save();
+        io.on('connection', function (socket) {
+            io.emit('questionsReady');
+        });
+        
         return res.status(201).send(Questions);
     
     }catch(e){

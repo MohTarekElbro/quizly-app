@@ -107,7 +107,7 @@ io.on('connection', function (socket) {
     });
 });
 
-module.exports.io=io
+module.exports=io
 
 
 

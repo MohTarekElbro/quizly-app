@@ -157,7 +157,7 @@ exports.enterResources = async (req, res) => {
 
     console.log(req.file)
 
-    res.send(path)
+    res.send({path})
 }
 exports.idPic = multer({
     fileFilter(req, file, cb) {

@@ -13,6 +13,7 @@ app.use((req, res, next) => {
     }
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.append('Access-Control-Allow-Headers', 'Content-Type');
+    res.append('Access-Control-Allow-Headers', 'multipart/form-data');
     res.append('Access-Control-Allow-Headers', 'Authorization');
     next();
 });

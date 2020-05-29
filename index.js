@@ -103,6 +103,7 @@ io.on('connection', function (socket) {
         io.emit('GetNumberOfNotification')
     });
     socket.on('questionsReady',()=>{
+        console.log('In Index')
         io.emit('sendQuestions')
     });
 });

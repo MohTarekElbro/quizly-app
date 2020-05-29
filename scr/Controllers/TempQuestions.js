@@ -12,7 +12,11 @@ exports.Add_Questions=async(req,res)=>{
                 });
         Questions.date.setHours(Questions.date.getHours() + 2);
         await Questions.save();
-        io.emit('questionsReady');
+        
+        io.on('connection', function (socket) {
+            console.log('ay 7aga')
+            io.emit('questionsReady')
+        });
         return res.status(201).send(Questions);
     
     }catch(e){

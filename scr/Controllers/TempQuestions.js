@@ -2,7 +2,11 @@ const TempQuestion=require('../models/TempQuestion')
 const DomainController=require('../Controllers/domain')
 const instructor=require('./instructor')
 var datetime = require('node-datetime');
-const io=require('../../index')
+const socketIOClient=require('socket.io-client')
+const ENDPOINT = process.env.PORT;
+const socket = socketIOClient(ENDPOINT);
+
+
 //Add New Exam
 exports.Add_Questions=async(req,res)=>{
     try{
@@ -12,11 +16,7 @@ exports.Add_Questions=async(req,res)=>{
                 });
         Questions.date.setHours(Questions.date.getHours() + 2);
         await Questions.save();
-        
-        io.on('connection', function (socket) {
-            console.log('ay 7aga')
-            io.emit('questionsReady')
-        });
+        socket.emit('questionsReady')
         return res.status(201).send(Questions);
     
     }catch(e){

@@ -4,7 +4,7 @@ const instructor=require('./instructor')
 var datetime = require('node-datetime');
 const socketIOClient=require('socket.io-client')
 // const ENDPOINT = process.env.PORT;
-const ENDPOINT = 'https://quizly-app.herokuapp.com:'+process.env.PORT;
+const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
 const socket = socketIOClient(ENDPOINT);
 
 

@@ -35,7 +35,6 @@ exports.GetRequest=async(req,res)=>{
             return res.status(400).send('No Such Request For That User!!')
         }
         temp=JSON.parse(JSON.stringify(Request))
-       await Request.remove()
        return res.status(200).send(temp)
 
     }catch(e){

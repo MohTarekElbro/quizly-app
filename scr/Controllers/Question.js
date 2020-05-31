@@ -1125,6 +1125,8 @@ exports.generateQuestions=async(req,res)=>{
     try{
         let path= req.body.path
         let type=req.params.type
+        let Diffculty = req.body.Diffculty
+        console.log("path: ",Diffculty)
         //reading file
          const data = fs.readFileSync(path).toString()
          // construct object

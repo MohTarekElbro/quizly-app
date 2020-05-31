@@ -3,7 +3,7 @@ const DomainController=require('../Controllers/domain')
 const instructor=require('./instructor')
 var datetime = require('node-datetime');
 const socketIOClient=require('socket.io-client')
-const ENDPOINT = process.env.PORT;
+const ENDPOINT = 'https://quizly-app.herokuapp.com:'+process.env.PORT;
 const socket = socketIOClient(ENDPOINT);
 
 
@@ -36,7 +36,6 @@ exports.GetTempQuestions=async(req,res)=>{
             return res.status(404).send('There is no such an Questions!!')
         }
         temp=JSON.parse(JSON.stringify(Questions))
-       await Questions.remove()
        return res.status(200).send(temp)
 
     }catch(e){

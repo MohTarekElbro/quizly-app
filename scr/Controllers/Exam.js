@@ -119,7 +119,7 @@ exports.View_Past_Exams=async (req,res)=>{
         let FilterExam=[]
         const Count = Number(req.params.count)
         const verision = Number(req.params.verision)
-        if(req.body.hasOwnProperty('Domain_Name') && req.body.Domain_Name!=''){
+        if(req.body.hasOwnProperty('Domain_Name') && req.body.Domain_Name!=""){
             for(var i=0;i<Allex.length;i++){
                 domain=await DomainController.Selectdomain(req.body.Domain_Name)
                 domain=JSON.parse(JSON.stringify(domain))
@@ -135,8 +135,8 @@ exports.View_Past_Exams=async (req,res)=>{
             exam=Allex
         }
 
-        if(req.body.hasOwnProperty('Search') && req.body.Search!=''){
-            if(req.body.Search.hasOwnProperty('StartQuestion') && req.body.Search.StartQuestion!=''){
+        if(req.body.hasOwnProperty('Search') && req.body.Search!=""){
+            if(req.body.Search.hasOwnProperty('StartQuestion') && req.body.Search.StartQuestion!=""){
                 FilterExam=exam.filter((e)=>{
                     if(e.Questions.length >= Number(req.body.Search.StartQuestion) && e.Questions.length <=Number(req.body.Search.EndQuestion)){
                         return e
@@ -149,7 +149,7 @@ exports.View_Past_Exams=async (req,res)=>{
             else{
                 FilterExam=exam
             }
-            if(req.body.Search.hasOwnProperty('StartDate') && req.body.Search.StartDate!=''){
+            if(req.body.Search.hasOwnProperty('StartDate') && req.body.Search.StartDate!=""){
                 FilterExam=FilterExam.filter((e)=>{
                     if(new Date(e.createdAt) >=new Date(req.body.Search.StartDate) && new Date(e.createdAt) <= new Date(req.body.Search.EndDate)){
                         console.log('e')
@@ -161,7 +161,7 @@ exports.View_Past_Exams=async (req,res)=>{
                     return res.status(300).send({"massage":"The Date Is Out Of Range"})
                 }
             }
-            if(req.body.Search.hasOwnProperty('StartDuration') && req.body.Search.StartDate!='' && req.body.Search.hasOwnProperty('EndDuration') && req.body.Search.EndDate!=''){
+            if(req.body.Search.hasOwnProperty('StartDuration') && req.body.Search.StartDate!="" && req.body.Search.hasOwnProperty('EndDuration') && req.body.Search.EndDate!=""){
                 FilterExam=FilterExam.filter((e)=>{
                     if(e.duration >=Number(req.body.Search.StartDuration) && e.duration <= Number(req.body.Search.EndDuration)){
                         return e
@@ -172,7 +172,7 @@ exports.View_Past_Exams=async (req,res)=>{
                     return res.status(300).send({"massage":"The Duration Is Out Of Range"})
                 }
             }
-            if(req.body.Search.hasOwnProperty('university') && req.body.Search.university!=''){
+            if(req.body.Search.hasOwnProperty('university') && req.body.Search.university!=""){
                 FilterExam=FilterExam.filter((e)=>{
                     if(e.university === req.body.Search.university){
                         return e
@@ -183,7 +183,7 @@ exports.View_Past_Exams=async (req,res)=>{
                     return res.status(300).send({"massage":"The University Is Out Of Range"})
                 }
             }
-            if(req.body.Search.hasOwnProperty('faculty') && req.body.Search.faculty!=''){
+            if(req.body.Search.hasOwnProperty('faculty') && req.body.Search.faculty!=""){
                 FilterExam=FilterExam.filter((e)=>{
                     if(e.faculty === req.body.Search.faculty){
                         return e

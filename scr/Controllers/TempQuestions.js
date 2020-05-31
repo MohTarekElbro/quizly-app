@@ -3,12 +3,9 @@ const DomainController=require('../Controllers/domain')
 const instructor=require('./instructor')
 var datetime = require('node-datetime');
 const socketIOClient=require('socket.io-client')
-<<<<<<< HEAD
-const ENDPOINT = 'https://quizly-app.herokuapp.com:'+process.env.PORT;
-=======
+
 // const ENDPOINT = process.env.PORT;
 const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
->>>>>>> b423c6b33cd8137e7790bbc15aaf4705d43e18ce
 const socket = socketIOClient(ENDPOINT);
 
 

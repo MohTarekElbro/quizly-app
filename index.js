@@ -6,7 +6,7 @@ const path = require("path");
 const express = require('express')
 const app = express()
 app.use((req, res, next) => {
-    var allowedOrigins = ['https://realquizly.web.app', 'http://localhost:3000' , "https://5ed55579fd9f2b80cfcf536f--youthful-boyd-4eb098.netlify.app" ];
+    var allowedOrigins = ['https://realquizly.web.app', 'http://localhost:3000' , "https://youthful-boyd-4eb098.netlify.app" ];
     var origin = req.headers.origin;
     if (allowedOrigins.indexOf(origin) > -1) {
         res.setHeader('Access-Control-Allow-Origin', origin);

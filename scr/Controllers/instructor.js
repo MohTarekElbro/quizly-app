@@ -8,6 +8,8 @@ var datetime = require('node-datetime');
 const Question = require('./Question')
 const request = require('request')
 var fs = require('fs');
+const TempQuestions=require('../Controllers/TempQuestions')
+const TempRequest = require('../Controllers/TempRequestedInstructors')
 
 
 exports.test = async (req, res) => {
@@ -314,5 +316,16 @@ exports.listSpecificItems = (Count, verision, FilterQB) => {
     }
     return Questions
 
+}
+exports.DeleteAllRequests=async(req,res)=>{
+    try{
+    temp1=await TempQuestions.Delete_Questions(req.instructor._id)
+    temp2=await TempRequest.DeleteRequest(req.instructor._id)
+    if(temp1 == 1 && temp2==1){
+        res.status(200).send({massage:"All Request Deleted"})     
+    }
+}catch(e){
+    res.status(500).send({massage:"can't Reach the Sever now"})
+}
 }
 

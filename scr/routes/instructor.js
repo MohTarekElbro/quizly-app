@@ -61,7 +61,8 @@ router.get('/instructor/GetTempQuestions',Auth.Auth,TempQuestions.GetTempQuestio
 
 //get Requestsssss
 router.get('/instructor/GetMyRequest',Auth.Auth,TempRequest.GetRequest)
-
+//Delete All Request
+router.get('/instructor/DeleteAllRequest',Auth.Auth,)
 
 module.exports=router
 

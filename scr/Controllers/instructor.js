@@ -269,11 +269,10 @@ exports.getMyQuestions = async (req, res) => {
             Q = await Question.List_Questions(instructor._id, 'all')
         }
         else {
-            Q = await Question.List_Questions(instructor._id, req.body.domain)
+            Q = await Question.List_Questions(instructor._id, req.body.Domain_Name)
         }
         const Count = Number(req.params.count)
         const verision = Number(req.params.verision)
-
 
         if (Q === false) {
             return res.status(404).send({})
@@ -296,6 +295,7 @@ exports.getMyQuestions = async (req, res) => {
         res.status(202).send(this.listSpecificItems(Count, verision, FilterQB))
     }
     catch (e) {
+        console.log(e)
         res.status(500).send("can't connect  with server")
     }
 }

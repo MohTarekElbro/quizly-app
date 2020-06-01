@@ -931,12 +931,10 @@ exports.List_Question = async () => {
 //List Questions route 
 exports.List_Questions = async (id,domain) => {
     try {
-       
         const Questions = await Question.find({ owner: id }).populate({
             path:'domain',
             select:'domain_name'
         })
-        
         if (Questions.length === 0) {
             return false
         }
@@ -945,6 +943,7 @@ exports.List_Questions = async (id,domain) => {
         if(domain !='all'){
             Q = await Q.filter((element) => element.domain.domain_name === domain)
         }
+
         if(Q.length===0){
             return false
         }

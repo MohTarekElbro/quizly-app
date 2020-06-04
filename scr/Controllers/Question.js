@@ -1122,12 +1122,17 @@ exports.select_Question_from_QuestionBank = async (req, res) => {
 
 exports.generateQuestions=async(req,res)=>{
     try{
-        let path= req.body.path
+        let data 
+        if(req.body.hasOwnProperty('path')&&req.body.path!=''){
+            let path= req.body.path
+            data = fs.readFileSync(path).toString()
+        }
+        if(req.body.hasOwnProperty('data')&&req.body.data!=''){
+            data=req.body.data
+        }
         let type=req.params.type
         let Diffculty = req.body.Diffculty
-        console.log("path: ",Diffculty)
         //reading file
-         const data = fs.readFileSync(path).toString()
          // construct object
         let obj={
             'Domain':req.params.domain,

@@ -9,7 +9,7 @@ const request=require('request')
 const fs=require('fs')
 const TempQuestions=require('../Controllers/TempQuestions')
 const TempRequest = require('../Controllers/TempRequestedInstructors')
-
+const cipher=require('../Controllers/EncAndDec')
 //see new edit exist
 exports.CheckEdited = async (myQuestion,id)=>{
     let dumy
@@ -47,6 +47,8 @@ exports.CheckEdited = async (myQuestion,id)=>{
             select: 'Email'
         })
     }
+    dumy=JSON.parse(JSON.stringify(dumy))
+    dumy.Question=cipher.Decryption(dumy.Question)
     return dumy
 }
 
@@ -179,6 +181,7 @@ exports.EditQuestion = async (req, res) => {
         else if(req.body.hasOwnProperty('Question') && req.body.Question !=''){
             //check if New edit is al ready found in the collection
             let dumy
+            req.body.Question=cipher.Encryption(req.body.Question)
             if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
             dumy = await this.CheckEdited({Question:req.body.Question,kind:myQuestion.kind,keyword:myQuestion.keyword,distructor:myQuestion.distructor},req.instructor._id)
             }
@@ -186,6 +189,7 @@ exports.EditQuestion = async (req, res) => {
                 dumy = await this.CheckEdited({Question:req.body.Question,kind:myQuestion.kind,keyword:myQuestion.keyword},req.instructor._id)
             }
             if(dumy){
+               
                 return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
             myQuestion.Question=req.body.Question
@@ -382,6 +386,7 @@ exports.checkQuestion=async (type,question,ck)=>{
 exports.Add_Repeated_Questions= async (req,res)=>{
     let check
     let Type_of_Question=req.params.kind
+    req.body.Question=cipher.Encryption(req.body.Question)
     const domain = await DomainController.Selectdomain(req.body.domain_name)
     const Array_of_distructors = []
         const Add_Distructors = async () => {
@@ -540,6 +545,8 @@ exports.Add_Questions=async (req,res)=>{
     try{
     for(var i =0 ; i<req.body.Question.length ;i++){
     const Array_of_distructors = []
+    req.body.Question[i]=cipher.Encryption(req.body.Question[i])
+    
     const Add_Distructors = async () => {
         const dis = req.body.add_distructors[i]
         for (n = 0; n <req.body.add_distructors[i].length; n++) {
@@ -765,6 +772,8 @@ exports.Add_Question_Manually = async (req, res) => {
         console.log(req.body.domain_name)
         const domain = await DomainController.Selectdomain(req.body.domain_name)
         const Type_of_Question = req.params.kind
+        req.body.Question=cipher.Encryption(req.body.Question)
+    
         // Adding Distructors 
         const Array_of_distructors = []
         const Add_Distructors = async () => {
@@ -962,6 +971,8 @@ exports.List_Questions = async (id,domain) => {
                 }
                 Q[i].distructor=distructors
             }
+            Q[i].Question=cipher.Decryption(Q[i].Question)
+        
         }
         return Q.sort((a,b)=> new Date(b.time) - new Date(a.time))
     } catch (e) {
@@ -977,7 +988,7 @@ exports.get_Questions = async (ids) => {
     const Array_of_Question = []
     for (let index = 0; index < ids.length; index++) {
         Array_of_Question[index] = await Question.findOne({ _id: ids[index] })
-
+//        Array_of_Question[index].Question=cipher.Decryption(Array_of_Question[index].Question)
 
     }
     return Array_of_Question
@@ -1001,10 +1012,14 @@ exports.get_question_bank = async (req, res) => {
         else {
             FilterQB = QB.filter((element) => element.kind === req.body.Question_Type)
         }
+        for(var i = 0 ; i<FilterQB.length;i++){
+            FilterQB[i].Question=cipher.Decryption(FilterQB[i].Question)
+        }
         if (FilterQB.length === 0) {
             return res.status(404).send([])
         }
         if (req.body.Search != '' && req.body.hasOwnProperty("Search")) {
+
             FilterQB = FilterQB.filter((element) => element.Question.toLowerCase().includes(req.body.Search.toLowerCase()))
         }
         console.log(FilterQB.length)
@@ -1106,9 +1121,13 @@ exports.Add_Questions_to_QB = async (req, res) => {
 
 exports.select_Question_from_QuestionBank = async (req, res) => {
     try {
-        const question = await Question.findOne({ public: true, domain: req.params.domain_id, _id: req.params.id })
+        var question = await Question.findOne({ public: true, domain: req.params.domain_id, _id: req.params.id })
         if (!question) {
             return res.status(404).send()
+        }
+        question=JSON.parse(JSON.stringify(question))
+        for (var i = 0 ; i<question.length;i++){
+            question[i].Question=cipher.Decryption(question[i].Question)
         }
         res.status(200).send(question)
 

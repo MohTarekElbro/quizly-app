@@ -6,6 +6,7 @@ const Complete = require('../models/complete')
 const TrueOrFalse = require('../models/TrueOrFalse')
 const MCQ = require('../models/mcq')
 const instructor=require('./instructor')
+const cipher=require('../Controllers/EncAndDec')
 
 //Add New Exam
 exports.Add_New_Exam=async(req,res)=>{
@@ -56,7 +57,7 @@ exports.GetExamsQuestions= async(Q)=>{
                 select: 'distructor'
             }) 
             y=JSON.parse(JSON.stringify(y))
-            myq.push({'Question':y.Question,'Level':y.Level,'state':y.state,'keyword':y.keyword,'distructor':y.distructor,'kind':y.kind})
+            myq.push({'Question':cipher.Decryption(y.Question),'Level':y.Level,'state':y.state,'keyword':y.keyword,'distructor':y.distructor,'kind':y.kind})
         }
         else{
             y= await MCQ.findById(Q[i]).populate({
@@ -70,13 +71,14 @@ exports.GetExamsQuestions= async(Q)=>{
                 select: 'distructor'
             })
             y=JSON.parse(JSON.stringify(y))
-            myq.push({'Question':y.Question,'Level':y.Level,'keyword':y.keyword,'distructor':y.distructor,'kind':y.kind})
+            myq.push({'Question':cipher.Decryption(y.Question),'Level':y.Level,'keyword':y.keyword,'distructor':y.distructor,'kind':y.kind})
         
         }
        }
        else if (x.hasOwnProperty('Question')){
         y=await Complete.findById(Q[i])
-        myq.push({'Question':y.Question,'Level':y.Level,'keyword':y.keyword,'kind':y.kind})
+        y=JSON.parse(JSON.stringify(y))
+        myq.push({'Question':cipher.Decryption(y.Question),'Level':y.Level,'keyword':y.keyword,'kind':y.kind})
        }
     }
     return myq
@@ -218,7 +220,7 @@ exports.View_Past_Exams=async (req,res)=>{
 //selete exam
 exports.Select_Exam=async(req,res)=>{
     try{
-        const exam = await Exam.findOne({_id:req.params.id}).populate({
+        let exam = await Exam.findOne({_id:req.params.id}).populate({
             path:'owner',
             select:'Email'
         }).populate({
@@ -232,6 +234,10 @@ exports.Select_Exam=async(req,res)=>{
         if(!exam){
             return res.status(404).send('No Such an Exam')
 
+        }
+        exam=JSON.parse(JSON.stringify(exam))
+        for(var i = 0 ; i<exam.Questions.length;i++){
+            exam.Questions[i].Question=cipher.Decryption(exam.Questions[i].Question)
         }
         res.status(200).send(exam)
 

@@ -11,7 +11,7 @@ const instructor=require('./instructor')
 exports.Add_New_Exam=async(req,res)=>{
     try{
         //select domain
-        const domain=await DomainController.Selectdomain(req.body.domain_name)
+        //const domain=await DomainController.Selectdomain(req.body.domain_name)
         
         // select Questions
         check=await this.checkexistExams({id:req.instructor._id,questions:req.body.Questions})
@@ -20,7 +20,7 @@ exports.Add_New_Exam=async(req,res)=>{
         const exam= new Exam({
             ...req.body,
             owner: req.instructor._id,
-            domain,
+            
                 })
 
         await exam.save()
@@ -46,9 +46,6 @@ exports.GetExamsQuestions= async(Q)=>{
        if(x.hasOwnProperty('distructor')){
         if(x.kind ==='T/F'){
             y=await TrueOrFalse.findById(Q[i]).populate({
-                path: 'domain',
-                select: 'domain_name'
-            }).populate({
                 path: 'owner',
                 select: 'Email'
             }).populate({
@@ -60,9 +57,9 @@ exports.GetExamsQuestions= async(Q)=>{
         }
         else{
             y= await MCQ.findById(Q[i]).populate({
-                path: 'domain',
-                select: 'domain_name'
-            }).populate({
+            //     path: 'domain',
+            //     select: 'domain_name'
+            // }).populate({
                 path: 'owner',
                 select: 'Email'
             }).populate({
@@ -119,21 +116,22 @@ exports.View_Past_Exams=async (req,res)=>{
         let FilterExam=[]
         const Count = Number(req.params.count)
         const verision = Number(req.params.verision)
-        if(req.body.hasOwnProperty('Domain_Name') && req.body.Domain_Name!=""){
-            for(var i=0;i<Allex.length;i++){
-                domain=await DomainController.Selectdomain(req.body.Domain_Name)
-                domain=JSON.parse(JSON.stringify(domain))
-                if(domain == Allex[i].domain){
-                    exam.push(Allex[i])
-                }
-            }
-            if(exam.length ===0){
-                return res.status(300).send({"massage":"no Exams Found On That Domain"})
-            }
-        }
-        else{
-            exam=Allex
-        }
+
+        // if(req.body.hasOwnProperty('Domain_Name') && req.body.Domain_Name!=""){
+        //     for(var i=0;i<Allex.length;i++){
+        //         domain=await DomainController.Selectdomain(req.body.Domain_Name)
+        //         domain=JSON.parse(JSON.stringify(domain))
+        //         if(domain == Allex[i].domain){
+        //             exam.push(Allex[i])
+        //         }
+        //     }
+        //     if(exam.length ===0){
+        //         return res.status(300).send({"massage":"no Exams Found On That Domain"})
+        //     }
+        // }
+        // else{
+        //     exam=Allex
+        // }
 
         if(req.body.hasOwnProperty('Search') && req.body.Search!=""){
             if(req.body.Search.hasOwnProperty('StartQuestion') && req.body.Search.StartQuestion!=""){
@@ -221,11 +219,13 @@ exports.Select_Exam=async(req,res)=>{
         const exam = await Exam.findOne({_id:req.params.id}).populate({
             path:'owner',
             select:'Email'
-        }).populate({
-            path:'domain',
-            select:'domain_name'
+        })
+        //.populate({
+        //     path:'domain',
+        //     select:'domain_name'
             
-        }).populate({
+      //  })
+        .populate({
             path:'Questions',
             select:'Question'
         })
@@ -300,10 +300,6 @@ exports.Select_Question_from_Exam=async(req,res)=>{
 
 }
 
-//Edit Exam 
-//print exam
-//generate exam
-//add questions of exam to Question bank
 
 
 

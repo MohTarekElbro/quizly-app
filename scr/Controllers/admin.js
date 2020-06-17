@@ -21,7 +21,7 @@ exports.getAdminEmail= async()=>{
 exports.SingUp=async(req,res)=>{
     try{
         const isAdmin = await Admin.findOne({})
-        console.log(isAdmin)
+        console.log(`admin is ${isAdmin}`)
         if(isAdmin!==null){
             return res.status(400).send('cannot create new admin')
         }
@@ -167,6 +167,7 @@ exports.Select_SingUp_Request=async(req,res)=>{
      try{
          
         const admin = await Admin.findOne({})
+        console.log(`admin is ${admin}`)
         const instructor= await Instructor.findOne({_id:req.params.id,accepted:false })
         if(!instructor){
            return res.status(404).send('not found ...')
@@ -175,7 +176,7 @@ exports.Select_SingUp_Request=async(req,res)=>{
         if(instructor.accepted===false){
           
          const pass= instructor.Password= randomString(7)
-         console.log(pass)
+         console.log(`pass is ${pass}`)
           
         SendWelcomMessage(admin.email,instructor.Email,instructor.Frist_Name,pass)
         instructor.accepted='true'

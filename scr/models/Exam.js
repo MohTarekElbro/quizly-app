@@ -2,11 +2,17 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 
 const ExamSchema= new mongoose.Schema({
-    domain:{
-        type:mongoose.Types.ObjectId,
-        ref:'Domain',
-        required:true,
+    // domain:{
+    //     type:mongoose.Types.ObjectId,
+    //     ref:'Domain',
+    //     required:true,
+    //     trim:true,
+
+    // },
+    subject_name:{
+        type:String,
         trim:true,
+        required:true,
 
     },
     owner:{

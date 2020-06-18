@@ -20,6 +20,10 @@ const TempQuestionschema = new mongoose.Schema({
     domain:{
         type:String,
         required:false
+    },
+    kind:{
+        type:String,
+        required:true
     }
     
 })

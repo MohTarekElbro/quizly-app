@@ -48,7 +48,7 @@ exports.CheckEdited = async (myQuestion,id)=>{
         })
     }
     dumy=JSON.parse(JSON.stringify(dumy))
-    dumy.Question=cipher.Decryption(dumy.Question)
+//    dumy.Question=cipher.Decryption(dumy.Question)
     return dumy
 }
 
@@ -62,6 +62,7 @@ exports.EditQuestion = async (req, res) => {
         if (!question) {
             return res.status(404).send('there is no such a question to be updated')
         }
+        
         let distructor=[]
         let distcheck=[]
         let check
@@ -94,7 +95,7 @@ exports.EditQuestion = async (req, res) => {
         check = await this.checkQuestion(question.kind.toLowerCase(),{Question:question.Question,id:req.instructor._id},{ch1:false,ch2:true})
         check2 = await this.checkQuestion(question.kind.toLowerCase(),{Question:question.Question,id:req.instructor._id},{ch1:true,ch2:false})
         }
-            if((check && check2) || check2){
+        if((!check && !check2) || !check2){
                 if(question.kind == 'MCQ'){
                      myQuestion= new MCQ({
                         distructor:question.distructor,
@@ -139,6 +140,7 @@ exports.EditQuestion = async (req, res) => {
                 }
             }
             else{
+                console.log("out")
                 if(question.kind == 'MCQ'){
                     myQuestion=await MCQ.findOne({owner:req.instructor._id,Question:question.Question})
                 }
@@ -189,7 +191,10 @@ exports.EditQuestion = async (req, res) => {
         if (req.body.hasOwnProperty('RemoveOldDistructor') && req.body.RemoveOldDistructor !=''){
             x=oldIdDistructor.length
             realcount=realcount+1
-            for(var i=0;i<req.body.RemoveOldDistructor;i++){
+            for(var i=0;i<req.body.RemoveOldDistructor.length;i++){
+            // console.log(distructor.find((e)=> req.body.RemoveOldDistructor[i] === e.distructor))
+            // console.log(distructor)
+            // console.log(req.body.RemoveOldDistructor[i])
             oldIdDistructor.push(distructor.find((e)=> req.body.RemoveOldDistructor[i] === e.distructor))
             myQuestion.distructor.remove(oldIdDistructor[x]._id)
             x=x+1
@@ -213,7 +218,7 @@ exports.EditQuestion = async (req, res) => {
                 dumy = await this.CheckEdited({Question:req.body.Question,kind:myQuestion.kind,keyword:myQuestion.keyword},req.instructor._id)
             }
             if(dumy){
-                fakecount=fakecount+1  
+                fakecount=realcount 
                 //return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
             myQuestion.Question=req.body.Question

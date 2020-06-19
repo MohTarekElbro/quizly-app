@@ -88,7 +88,13 @@ exports.removeFromDistructor=async(question_id ,distructor_id)=>{
     if(!distructor){
         throw new Error('there is no such a distructor')
     }
-    distructor.Question_id.remove(question_id)
+    try{
+        distructor.Question_id.remove(question_id)
+    }catch(e){
+        if(distructor.Question_id.length===0){
+            await distructor.remove()
+        }    
+    }
     await distructor.save()
     if(distructor.Question_id.length===0){
         await distructor.remove()

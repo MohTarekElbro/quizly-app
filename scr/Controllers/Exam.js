@@ -20,8 +20,7 @@ exports.Add_New_Exam=async(req,res)=>{
         if(check.flag){
         const exam= new Exam({
             ...req.body,
-            owner: req.instructor._id,
-            
+            owner: req.instructor._id,       
                 })
 
         await exam.save()
@@ -119,21 +118,22 @@ exports.View_Past_Exams=async (req,res)=>{
         const Count = Number(req.params.count)
         const verision = Number(req.params.verision)
 
-        // if(req.body.hasOwnProperty('Domain_Name') && req.body.Domain_Name!=""){
-        //     for(var i=0;i<Allex.length;i++){
-        //         domain=await DomainController.Selectdomain(req.body.Domain_Name)
-        //         domain=JSON.parse(JSON.stringify(domain))
-        //         if(domain == Allex[i].domain){
-        //             exam.push(Allex[i])
-        //         }
-        //     }
-        //     if(exam.length ===0){
-        //         return res.status(300).send({"massage":"no Exams Found On That Domain"})
-        //     }
-        // }
-        // else{
-        //     exam=Allex
-        // }
+        if(req.body.hasOwnProperty('subject_name') && req.body.subject_name !=""){
+            exam = Allex.filter((element) => element.subject_name.toLowerCase().includes(req.body.subject_name.toLowerCase()))
+            // for(var i=0;i<Allex.length;i++){
+            //     domain=await DomainController.Selectdomain(req.body.Domain_Name)
+            //     domain=JSON.parse(JSON.stringify(domain))
+            //     if(domain == Allex[i].domain){
+            //         exam.push(Allex[i])
+            //     }
+            // }
+            if(exam.length ===0){
+                return res.status(300).send({"massage":"no Exams Found On That Domain"})
+            }
+        }
+        else{
+            exam=Allex
+        }
 
         if(req.body.hasOwnProperty('Search') && req.body.Search!=""){
             if(req.body.Search.hasOwnProperty('StartQuestion') && req.body.Search.StartQuestion!=""){
@@ -198,7 +198,7 @@ exports.View_Past_Exams=async (req,res)=>{
             let Final=[]
             for(var i =0;i<FilterExam.length;i++){
                 Myexam=await this.GetExamsQuestions(FilterExam[i].Questions)
-                Final.push({_id:FilterExam[i]._id,duration:FilterExam[i].duration,university:FilterExam[i].university,faculty:FilterExam[i].faculty,Myexam})
+                Final.push({_id:FilterExam[i]._id,subject_name:FilterExam[i].subject_name,duration:FilterExam[i].duration,university:FilterExam[i].university,faculty:FilterExam[i].faculty,Myexam})
             }
             return res.status(200).send(Final)
         }
@@ -206,7 +206,7 @@ exports.View_Past_Exams=async (req,res)=>{
         FilterExam=instructor.listSpecificItems(Count, verision, exam)
         for(var i =0;i<FilterExam.length;i++){
             Myexam=await this.GetExamsQuestions(FilterExam[i].Questions)
-            Final.push({_id:FilterExam[i]._id,duration:FilterExam[i].duration,university:FilterExam[i].university,faculty:FilterExam[i].faculty,Myexam})
+            Final.push({_id:FilterExam[i]._id,subject_name:FilterExam[i].subject_name,duration:FilterExam[i].duration,university:FilterExam[i].university,faculty:FilterExam[i].faculty,Myexam})
         }
         res.status(200).send(Final)
     }catch(e){
@@ -272,8 +272,6 @@ exports.Search_exam=async(_id)=>{
     
     for (let i = 0; i<exam.Questions.length ;i++) {
          Array_of_Questions[i]=exam.Questions[i].Question
-       
-        
     }
     
 return Array_of_Questions    

@@ -65,7 +65,12 @@ exports.EditQuestion = async (req, res) => {
         let distructor=[]
         let distcheck=[]
         let check
+        let check2
         let returned
+        let newIdDist=[]
+        let oldIdDistructor=[]
+        let realcount=0
+        let fakecount=0
        if(question.kind == 'MCQ' || question.kind == 'T/F'){
         for (var i=0;i<question.distructor.length;i++){
            // console.log(question.distructor[i])
@@ -82,11 +87,14 @@ exports.EditQuestion = async (req, res) => {
             Type_of_Question= 'trueorfalse'
         }
         check = await this.checkQuestion(Type_of_Question,{Question:question.Question,distructor:distcheck,id:req.instructor._id},{ch1:false,ch2:true})
+        check2 = await this.checkQuestion(Type_of_Question,{Question:question.Question,distructor:distcheck,id:req.instructor._id},{ch1:true,ch2:false})
+
         }
         else{
         check = await this.checkQuestion(question.kind.toLowerCase(),{Question:question.Question,id:req.instructor._id},{ch1:false,ch2:true})
+        check2 = await this.checkQuestion(question.kind.toLowerCase(),{Question:question.Question,id:req.instructor._id},{ch1:true,ch2:false})
         }
-            if(check){
+            if((check && check2) || check2){
                 if(question.kind == 'MCQ'){
                      myQuestion= new MCQ({
                         distructor:question.distructor,
@@ -146,40 +154,56 @@ exports.EditQuestion = async (req, res) => {
         
 
         if(req.body.hasOwnProperty('NewDistructor') && req.body.NewDistructor !='' &&req.body.hasOwnProperty('OldDistructor') && req.body.OldDistructor !=''){
-            oldIdDistructor=distructor.find((e)=> req.body.OldDistructor === e.distructor)
-            await DistructorController.removeFromDistructor(myQuestion._id,oldIdDistructor._id)
-            myQuestion.distructor.remove(oldIdDistructor._id)
-            newIdDist=await DistructorController.addDistructor(req.body.NewDistructor)
-            myQuestion.distructor.push(newIdDist)
+            realcount=realcount+1
+            for (var i = 0 ;i<req.body.OldDistructor.length;i++){
+                oldIdDistructor.push(distructor.find((e)=> req.body.OldDistructor[i] === e.distructor))
+                //await DistructorController.removeFromDistructor(myQuestion._id,oldIdDistructor._id)
+                myQuestion.distructor.remove(oldIdDistructor[i]._id)
+                newIdDist.push(await DistructorController.addDistructor(req.body.NewDistructor[i]))
+                myQuestion.distructor.push(newIdDist[i])             
+            }
             dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:myQuestion.keyword,distructor:myQuestion.distructor},req.instructor._id)
             if(dumy){
-                return res.status(300).send({massage:"question is already in your collection",question:dumy})
+                fakecount=fakecount+1
+             //   return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
-            await DistructorController.LinkDistructorToQuestion(newIdDist,myQuestion._id)
-            await myQuestion.save()
+           // await DistructorController.LinkDistructorToQuestion(newIdDist,myQuestion._id)
+           // await myQuestion.save()
         }
-        else if(req.body.hasOwnProperty('NewDistructor') && req.body.NewDistructor !=''){
-            newIdDist=await DistructorController.addDistructor(req.body.NewDistructor)
-            myQuestion.distructor.push(newIdDist)
+        if(req.body.hasOwnProperty('AddNewDistructor') && req.body.AddNewDistructor !=''){
+            realcount=realcount+1
+            let x=newIdDist.length
+            for (var i=0 ;i<req.body.AddNewDistructor.length;i++){
+            newIdDist.push(await DistructorController.addDistructor(req.body.AddNewDistructor[i]))
+            myQuestion.distructor.push(newIdDist[x])
+            x=x+1
+            }
             dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:myQuestion.keyword,distructor:myQuestion.distructor},req.instructor._id)
             if(dumy){
-                return res.status(300).send({massage:"question is already in your collection",question:dumy})
+                fakecount=fakecount+1
+               // return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
-            await DistructorController.LinkDistructorToQuestion(newIdDist,myQuestion._id)
-            await myQuestion.save()
+            //await DistructorController.LinkDistructorToQuestion(newIdDist,myQuestion._id)
+            //await myQuestion.save()
         }
-        else if (req.body.hasOwnProperty('OldDistructor') && req.body.OldDistructor !=''){
-            oldIdDistructor=distructor.find((e)=> req.body.OldDistructor === e.distructor)
-            await DistructorController.removeFromDistructor(myQuestion._id,oldIdDistructor._id)
-            myQuestion.distructor.remove(oldIdDistructor._id)
+        if (req.body.hasOwnProperty('RemoveOldDistructor') && req.body.RemoveOldDistructor !=''){
+            x=oldIdDistructor.length
+            realcount=realcount+1
+            for(var i=0;i<req.body.RemoveOldDistructor;i++){
+            oldIdDistructor.push(distructor.find((e)=> req.body.RemoveOldDistructor[i] === e.distructor))
+            myQuestion.distructor.remove(oldIdDistructor[x]._id)
+            x=x+1
+            }
             dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:myQuestion.keyword,distructor:myQuestion.distructor},req.instructor._id)
             if(dumy){
-                return res.status(300).send({massage:"question is already in your collection",question:dumy})
+                fakecount=fakecount+1
+                //return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
-            await myQuestion.save()
+            //await myQuestion.save()
         }
-        else if(req.body.hasOwnProperty('Question') && req.body.Question !=''){
+        if(req.body.hasOwnProperty('Question') && req.body.Question !=''){
             //check if New edit is al ready found in the collection
+            realcount=realcount+1
             let dumy
             req.body.Question=cipher.Encryption(req.body.Question)
             if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
@@ -189,19 +213,16 @@ exports.EditQuestion = async (req, res) => {
                 dumy = await this.CheckEdited({Question:req.body.Question,kind:myQuestion.kind,keyword:myQuestion.keyword},req.instructor._id)
             }
             if(dumy){
-               
-                return res.status(300).send({massage:"question is already in your collection",question:dumy})
+                fakecount=fakecount+1  
+                //return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
             myQuestion.Question=req.body.Question
-            await myQuestion.save()
-            if(myQuestion.kind =='MCQ' || myQuestion.kind=='T/F'){
-                for(var i = 0;i<myQuestion.distructor.length;i++){
-                    await DistructorController.LinkDistructorToQuestion(myQuestion.distructor[i],myQuestion._id)
-                }
-            }
+            //await myQuestion.save()
+            
         }
-        else if(req.body.hasOwnProperty('keyword') && req.body.keyword!=''){
+        if(req.body.hasOwnProperty('keyword') && req.body.keyword!=''){
             //htb2a na2sa 7ta b3d rabt l python
+            realcount = realcount +1
             myQuestion.keyword=req.body.keyword
             let dumy
             if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
@@ -211,9 +232,30 @@ exports.EditQuestion = async (req, res) => {
                 dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:req.body.keyword},req.instructor._id)
             }
             if(dumy){
-                return res.status(300).send({massage:"question is already in your collection",question:dumy})
+                fakecount = fakecount +1 
+                //return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
             await myQuestion.save()
+        }
+        if(fakecount != realcount){
+            if(newIdDist.length >0){
+                if(myQuestion.kind =='MCQ' || myQuestion.kind=='T/F'){
+                    for(var i = 0;i<myQuestion.distructor.length;i++){
+                        await DistructorController.LinkDistructorToQuestion(myQuestion.distructor[i],myQuestion._id)
+                    }
+                }
+            }
+            if(oldIdDistructor.length >0){
+                if(myQuestion.kind =='MCQ' || myQuestion.kind=='T/F'){
+            for(var i = 0;i<oldIdDistructor.length;i++){
+            await DistructorController.removeFromDistructor(myQuestion._id,oldIdDistructor[i]._id)
+            }
+                }
+            }
+            await myQuestion.save()
+        }
+        else{
+            return res.status(300).send({massage:"question is already in your collection",question:myQuestion})
         }
         if(myQuestion.kind == 'MCQ'){
             returned = await MCQ.findOne({ _id: myQuestion._id }).populate({
@@ -255,7 +297,7 @@ exports.EditQuestion = async (req, res) => {
         else{
             res.status(300).send({'massage':"Can't Edit Right now"})
         }
-
+        returned.Question = cipher.Decryption(returned.Question)
         res.status(202).send(returned)
     } catch (e) {
         console.log(e)

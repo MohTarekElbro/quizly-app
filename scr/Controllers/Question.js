@@ -92,6 +92,7 @@ exports.EditQuestion = async (req, res) => {
 
         }
         else{
+            Type_of_Question=question.kind.toLowerCase()
         check = await this.checkQuestion(question.kind.toLowerCase(),{Question:question.Question,id:req.instructor._id},{ch1:false,ch2:true})
         check2 = await this.checkQuestion(question.kind.toLowerCase(),{Question:question.Question,id:req.instructor._id},{ch1:true,ch2:false})
         }
@@ -240,7 +241,25 @@ exports.EditQuestion = async (req, res) => {
                 fakecount = fakecount +1 
                 //return res.status(300).send({massage:"question is already in your collection",question:dumy})
             }
-            await myQuestion.save()
+            //await myQuestion.save()
+        }
+        if(req.body.hasOwnProperty('public') && req.body.public!=''){
+            //htb2a na2sa 7ta b3d rabt l python
+            realcount = realcount +1
+            myQuestion.public=true
+            check2 = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,id:req.instructor._id},{ch1:true,ch2:false})
+            let dumy
+            if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
+            dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:req.body.keyword,distructor:myQuestion.distructor},req.instructor._id)
+        }
+            else{
+                dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:req.body.keyword},req.instructor._id)
+            }
+            if(dumy){
+                fakecount = fakecount +1 
+                //return res.status(300).send({massage:"question is already in your collection",question:dumy})
+            }
+            //await myQuestion.save()
         }
         if(fakecount != realcount){
             if(newIdDist.length >0){

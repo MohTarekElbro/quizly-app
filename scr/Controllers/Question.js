@@ -247,8 +247,8 @@ exports.EditQuestion = async (req, res) => {
         if(req.body.hasOwnProperty('public') && req.body.public!=''){
             //htb2a na2sa 7ta b3d rabt l python
             realcount = realcount +1
-            myQuestion.public=true
             if(req.body.public == true){   
+                myQuestion.public=true
                  if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
                 distcheck=[]
                 for (var i=0;i<question.distructor.length;i++){

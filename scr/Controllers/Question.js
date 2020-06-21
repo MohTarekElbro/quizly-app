@@ -244,7 +244,7 @@ exports.EditQuestion = async (req, res) => {
             }
             //await myQuestion.save()
         }
-        if(req.body.hasOwnProperty('public') && req.body.public!=''){
+        if(req.body.hasOwnProperty('public')){
             //htb2a na2sa 7ta b3d rabt l python
             realcount = realcount +1
             if(req.body.public == true){   
@@ -264,6 +264,22 @@ exports.EditQuestion = async (req, res) => {
                 return res.status(300).send({massage:"question is already in Our Question Bank",question:myQuestion})
             }
             //await myQuestion.save()
+        }
+        else{
+            if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
+                distcheck=[]
+                for (var i=0;i<question.distructor.length;i++){
+                     x=await Distructor.findById(myQuestion.distructor[i])
+                     distcheck.push(x.distructor)
+                 }
+            check = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,distructor:distcheck,id:req.instructor._id},{ch1:false,ch2:true})
+        }
+            else{
+                check = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,id:req.instructor._id},{ch1:false,ch2:true})
+            }
+            if(!check){
+                fakecount = fakecount +1
+            }
         }
         }
         if(fakecount != realcount){
@@ -380,7 +396,7 @@ exports.DeleteQuestion = async (req, res) => {
 }
 exports.checkQuestion=async (type,question,ck)=>{
     Q=await Question.find({Question:question.Question})
-    Qprivate=await Question.find({Question:question.Question,owner:question.id})
+    Qprivate=await Question.find({Question:question.Question,owner:question.id,public:false})
     if(Q.length >0){
         Q=JSON.parse(JSON.stringify(Q))
         Qprivate=JSON.parse(JSON.stringify(Qprivate))

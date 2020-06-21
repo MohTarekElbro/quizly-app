@@ -247,17 +247,19 @@ exports.EditQuestion = async (req, res) => {
             //htb2a na2sa 7ta b3d rabt l python
             realcount = realcount +1
             myQuestion.public=true
-            check2 = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,id:req.instructor._id},{ch1:true,ch2:false})
-            let dumy
             if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
-            dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:req.body.keyword,distructor:myQuestion.distructor},req.instructor._id)
+                distcheck=[]
+                for (var i=0;i<question.distructor.length;i++){
+                     x=await Distructor.findById(myQuestion.distructor[i])
+                     distcheck.push(x.distructor)
+                 }
+            check2 = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,distructor:distcheck,id:req.instructor._id},{ch1:true,ch2:false})
         }
             else{
-                dumy = await this.CheckEdited({Question:myQuestion.Question,kind:myQuestion.kind,keyword:req.body.keyword},req.instructor._id)
+                check2 = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,id:req.instructor._id},{ch1:true,ch2:false})
             }
-            if(dumy){
-                fakecount = fakecount +1 
-                //return res.status(300).send({massage:"question is already in your collection",question:dumy})
+            if(!check2){
+                return res.status(300).send({massage:"question is already in Our Question Bank",question:dumy})
             }
             //await myQuestion.save()
         }
@@ -333,29 +335,38 @@ exports.EditQuestion = async (req, res) => {
 }
 //Delete Question
 exports.DeleteQuestion = async (req, res) => {
-    const question = await Question.findOne({ _id: req.params.id })
+    let question = await Question.findOne({ _id: req.params.id })
 
     try {
         if (!question) {
             return res.status(404).send('Not found')
         }
         if (question.kind === 'Complete') {
+            if(question.public == true){
+                question.owner = '5ec2b99f5795860004c8a299'
+                await question.save()
+                return res.status(200).send({"massage":"remove From Your Collection"})
+            }
+            else{
             await question.remove()
             return res.status(200).send(question)
-
+            }
         }
         if (question.kind === 'T/F' || 'MCQ') {
-            console.log(question.distructor)
-
-            for (let index = 0; index < question.distructor.length; index++) {
-                await DistructorController.removeFromDistructor(question._id, question.distructor[index])
-
-
+            if(question.public == true){
+                question.owner = '5ec2b99f5795860004c8a299'
+                await question.save()
+                return res.status(200).send({"massage":"remove From Your Collection"})
             }
-            await question.remove()
-
-            return res.status(200).send(question)
-        }
+            else{
+                console.log(question.distructor)
+                for (let index = 0; index < question.distructor.length; index++) {
+                    await DistructorController.removeFromDistructor(question._id, question.distructor[index])
+                }
+                await question.remove()
+                return res.status(200).send(question)
+            }
+            }
     }
     catch (e) {
         console.log(e)
@@ -592,6 +603,7 @@ exports.Add_Repeated_Questions= async (req,res)=>{
                         select: 'distructor'
                     })
                 }
+                m.Question=cipher.Decryption(m.Question)
                     return res.status(201).send(m)
                 }
             
@@ -894,18 +906,19 @@ exports.Add_Question_Manually = async (req, res) => {
                 path: 'distructor',
                 select: 'distructor'
             })
-
+            m.Question=cipher.Decryption(m.Question)
             return res.status(201).send(m)
         }
         if (Type_of_Question === 'complete') {
 
-            const complete = new Complete({
+            let complete = new Complete({
                 ...req.body,
                 time: Date.now(),
                 owner: req.instructor._id,
                 domain,
             })
             await complete.save()
+            complete.Question=cipher.Decryption(complete.Question)
             res.status(201).send(complete)
         }
 
@@ -958,6 +971,7 @@ exports.Add_Question_Manually = async (req, res) => {
                 select: 'distructor'
             })
         }
+        m.Question=cipher.Decryption(m.Question)
             return res.status(201).send(m)
         }
     }

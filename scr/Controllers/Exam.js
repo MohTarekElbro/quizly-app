@@ -128,7 +128,7 @@ exports.View_Past_Exams=async (req,res)=>{
             //     }
             // }
             if(exam.length ===0){
-                return res.status(300).send({"massage":"no Exams Found On That Domain"})
+                return res.status(300).send({"massage":"no Exams Found On That Subject Name"})
             }
         }
         else{

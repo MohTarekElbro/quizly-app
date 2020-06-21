@@ -72,6 +72,7 @@ exports.EditQuestion = async (req, res) => {
         let oldIdDistructor=[]
         let realcount=0
         let fakecount=0
+        let Type_of_Question
        if(question.kind == 'MCQ' || question.kind == 'T/F'){
         for (var i=0;i<question.distructor.length;i++){
            // console.log(question.distructor[i])
@@ -80,7 +81,7 @@ exports.EditQuestion = async (req, res) => {
             distructor.push(x)
             distcheck.push(x.distructor)
         }
-        let Type_of_Question
+       
         if(question.kind == 'MCQ'){
             Type_of_Question=question.kind.toLowerCase()
         }

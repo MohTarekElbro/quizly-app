@@ -261,7 +261,7 @@ exports.EditQuestion = async (req, res) => {
                 check2 = await this.checkQuestion(Type_of_Question,{Question:myQuestion.Question,id:req.instructor._id},{ch1:true,ch2:false})
             }
             if(!check2){
-                return res.status(300).send({massage:"question is already in Our Question Bank",question:dumy})
+                return res.status(300).send({massage:"question is already in Our Question Bank",question:myQuestion})
             }
             //await myQuestion.save()
         }

@@ -247,7 +247,8 @@ exports.EditQuestion = async (req, res) => {
             //htb2a na2sa 7ta b3d rabt l python
             realcount = realcount +1
             myQuestion.public=true
-            if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
+            if(req.body.public == true){   
+                 if(myQuestion.kind =='MCQ' || myQuestion.kind == 'T/F'){
                 distcheck=[]
                 for (var i=0;i<question.distructor.length;i++){
                      x=await Distructor.findById(myQuestion.distructor[i])
@@ -262,6 +263,7 @@ exports.EditQuestion = async (req, res) => {
                 return res.status(300).send({massage:"question is already in Our Question Bank",question:dumy})
             }
             //await myQuestion.save()
+        }
         }
         if(fakecount != realcount){
             if(newIdDist.length >0){

@@ -495,17 +495,15 @@ exports.Add_Repeated_Questions= async (req,res)=>{
             return Array_of_distructors
         }
     if(req.body.hasOwnProperty('add_distructors')){
-        check = await this.checkQuestion(Type_of_Question,{Question:req.body.Question,distructor:req.body.add_distructors,id:req.instructor._id},{ch1:true,ch2:true})
+        check = await this.checkQuestion(Type_of_Question,{Question:req.body.Question,distructor:req.body.add_distructors,id:req.instructor._id},{ch1:true,ch2:false})
     }
     else{
-        check = await this.checkQuestion(Type_of_Question,{Question:req.body.Question,id:req.instructor._id},{ch1:true,ch2:true})
+        check = await this.checkQuestion(Type_of_Question,{Question:req.body.Question,id:req.instructor._id},{ch1:true,ch2:false})
     }
     if(!check){
         let Q
         if(Type_of_Question === 'complete'){
             Type_of_Question = 'Complete'
-            Q=await Question.findOne({Question:req.body.Question,kind:Type_of_Question,public:true,owner: req.instructor._id})
-            if(!Q){
             Q2=await Question.findOne({Question:req.body.Question,kind:Type_of_Question,public:false,owner: req.instructor._id})
             if(Q2){
                 return res.status(300).send({'massage':"you have already this Question in Your Collection"})
@@ -519,18 +517,16 @@ exports.Add_Repeated_Questions= async (req,res)=>{
                 domain,
             })
             await complete.save()
-            res.status(201).send(complete)
-        }
-        return res.status(300).send({'massage':"you have already this Question in Your Collection"})
+            return res.status(201).send(complete)
+        
         }
         else{
             let distract
 
                 if (Type_of_Question === 'mcq') {
                     Type_of_Question='MCQ'
-                    QA=await Question.findOne({Question:req.body.Question,kind:Type_of_Question,public:true,owner: req.instructor._id})
                     Q2=await Question.findOne({Question:req.body.Question,kind:Type_of_Question,public:false,owner: req.instructor._id})
-                    if(Q2  || QA){
+                    if(Q2){
                         console.log('in condition')
                         return res.status(301).send({'massage':"you have already this Question in Your Collection"})      
                           }
@@ -567,9 +563,8 @@ exports.Add_Repeated_Questions= async (req,res)=>{
                 }
                 else if (Type_of_Question === 'trueorfalse') {
                     Type_of_Question='T/F'
-                    QA=await Question.findOne({Question:req.body.Question,kind:Type_of_Question,public:true,owner: req.instructor._id})
                     Q2=await Question.findOne({Question:req.body.Question,kind:Type_of_Question,public:false,owner: req.instructor._id})
-                    if(Q2 || QA){
+                    if(Q2){
                         console.log('in condition')
                         return res.status(301).send({'massage':"you have already this Question in Your Collection"})      
                           }

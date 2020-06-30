@@ -56,4 +56,6 @@ router.post('/admin/profilepic/delete',AdminAuth.AdminAuth,Notify.GetNumberOfNot
 // select request 
 router.get('/admin/domainrequests/:id',AdminAuth.AdminAuth,Requestcontroller.selectRequest)
 
+router.post('/check',AdminAuth.Check)
+
 module.exports=router

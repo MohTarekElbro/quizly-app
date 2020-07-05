@@ -106,6 +106,14 @@ io.on('connection', function (socket) {
         console.log('In Index')
         io.emit('sendQuestions')
     });
+    socket.on('addDomain',()=>{
+        console.log('In Index')
+        io.emit('frontAddDomain')
+    });
+    socket.on('requestDomain',()=>{
+        console.log('In Index')
+        io.emit('frontRequestDomain')
+    });
 });
 
 

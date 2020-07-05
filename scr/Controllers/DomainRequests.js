@@ -1,5 +1,8 @@
 const Request= require('../models/DomainRequests')
 const multer =require('multer')
+const socketIOClient=require('socket.io-client')
+const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
+const socket = socketIOClient(ENDPOINT);
 
 exports.material=multer({
     dest: 'Materials',
@@ -29,6 +32,7 @@ exports.Send_Domain_Request=async(req,res)=>{
         req.instructor.requests=request._id
         await req.instructor.save()
         const data= await Request.findOne({_id:request._id}).populate('requester',"Email")
+        socket.emit("requestDomain")
         res.status(201).send(data)
 
     }catch(e){

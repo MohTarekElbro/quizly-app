@@ -1,6 +1,9 @@
 const Domain=require('../models/domain')
 const Notification = require('./Notifications')
 const Request= require('../models/DomainRequests')
+const socketIOClient=require('socket.io-client')
+const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
+const socket = socketIOClient(ENDPOINT);
 exports.ListDomains=async(req,res)=>{
     try{
         const domains=await Domain.find()
@@ -31,6 +34,7 @@ exports.AddDomain=async(req,res)=>{
         let name= req.body.domain_name
         let idd= domain._id
         await Notification.addAdminNotifications(name+' Have Been Added',idd)
+        socket.emit("addDomain")
         res.status(201).send(domain)
 
     }catch(e){

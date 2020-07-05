@@ -10,6 +10,9 @@ const request = require('request')
 var fs = require('fs');
 const TempQuestions=require('../Controllers/TempQuestions')
 const TempRequest = require('../Controllers/TempRequestedInstructors')
+const socketIOClient=require('socket.io-client')
+const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
+const socket = socketIOClient(ENDPOINT);
 
 
 exports.test = async (req, res) => {
@@ -191,6 +194,7 @@ exports.Send_SingnUp_Request = async (req, res) => {
             method: 'Get',
             headers: { 'Content-Type': 'application/json' },
         };
+        socket.emit('AddRequest')
         res.status(200).send('your request is sent .. please check your response mail')
     } catch (e) {
         console.log(e)

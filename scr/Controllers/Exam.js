@@ -304,7 +304,14 @@ exports.Select_Question_from_Exam=async(req,res)=>{
 
 }
 
-
+// Return All Exams of Instructor
+exports.ReturnMyExams= async (Id)=>{
+    let exam=await Exam.find({owner:Id})
+    if (exam){
+        return 0
+    }
+    return exam
+}
 
 
 

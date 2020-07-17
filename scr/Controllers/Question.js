@@ -10,6 +10,7 @@ const fs=require('fs')
 const TempQuestions=require('../Controllers/TempQuestions')
 const TempRequest = require('../Controllers/TempRequestedInstructors')
 const cipher=require('../Controllers/EncAndDec')
+const exam=require('./Exam')
 //see new edit exist
 exports.CheckEdited = async (myQuestion,id)=>{
     let dumy
@@ -355,7 +356,7 @@ exports.EditQuestion = async (req, res) => {
 //Delete Question
 exports.DeleteQuestion = async (req, res) => {
     let question = await Question.findOne({ _id: req.params.id })
-
+    let myexam=exam.ReturnMyExams(req.instructor._id)
     try {
         if (!question) {
             return res.status(404).send('Not found')
@@ -367,6 +368,15 @@ exports.DeleteQuestion = async (req, res) => {
                 return res.status(200).send({"massage":"remove From Your Collection"})
             }
             else{
+            if(myexam!=0){
+                for (let index = 0; index < myexam.length; index++) {
+                 let x=  myexam[index].Questions.filter((e)=> e == question._id)
+                 if(x){
+                    return res.status(303).send({massage:"This Question Can't be Deleted as It's found in one Of Your Exam"})
+
+                 }
+                }
+            }
             await question.remove()
             return res.status(200).send(question)
             }
@@ -378,7 +388,15 @@ exports.DeleteQuestion = async (req, res) => {
                 return res.status(200).send({"massage":"remove From Your Collection"})
             }
             else{
-                console.log(question.distructor)
+                if(myexam!=0){
+                    for (let index = 0; index < myexam.length; index++) {
+                     let x=  myexam[index].Questions.filter((e)=> e == question._id)
+                     if(x){
+                        return res.status(303).send({massage:"This Question Can't be Deleted as It's found in one Of Your Exam"})
+    
+                     }
+                    }
+                }
                 for (let index = 0; index < question.distructor.length; index++) {
                     await DistructorController.removeFromDistructor(question._id, question.distructor[index])
                 }

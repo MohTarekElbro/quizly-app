@@ -3,7 +3,7 @@ const multer =require('multer')
 const socketIOClient=require('socket.io-client')
 const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
 const socket = socketIOClient(ENDPOINT);
-
+const Notification = require('./Notifications')
 exports.material=multer({
     dest: 'Materials',
     fileFilter(req, file, cb) {
@@ -27,10 +27,11 @@ exports.Send_Domain_Request=async(req,res)=>{
             material:path
 
         })
-       
+
         await request.save()
         req.instructor.requests=request._id
         await req.instructor.save()
+        await Notification.addInstructorRequest('An User of email ' + req.instructor.Email + ' Want To Add A new Domain ... Where Domain Name Is ' + req.body.Requested_domain, req.instructor.Email, req.instructor._id)
         const data= await Request.findOne({_id:request._id}).populate('requester',"Email")
         socket.emit("requestDomain")
         res.status(201).send(data)

@@ -371,7 +371,7 @@ exports.DeleteQuestion = async (req, res) => {
             if(myexam!=0){
                 for (let index = 0; index < myexam.length; index++) {
                  let x=  myexam[index].Questions.filter((e)=> e == question._id)
-                 if(x){
+                 if(x.length > 0){
                     return res.status(303).send({massage:"This Question Can't be Deleted as It's found in one Of Your Exam"})
 
                  }
@@ -391,7 +391,7 @@ exports.DeleteQuestion = async (req, res) => {
                 if(myexam!=0){
                     for (let index = 0; index < myexam.length; index++) {
                      let x=  myexam[index].Questions.filter((e)=> e == question._id)
-                     if(x){
+                     if(x.length > 0){
                         return res.status(303).send({massage:"This Question Can't be Deleted as It's found in one Of Your Exam"})
     
                      }

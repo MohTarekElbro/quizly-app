@@ -27,7 +27,7 @@ router.post('/upload/profilePicture',Auth.Auth,Notify.GetNumberOfNotification,in
 router.get('/instructor/me',Auth.Auth,Notify.GetNumberOfNotification,instructorController.ReadProfile)
 
 // Delete  his own account 
- router.delete('/instructor/delete',Auth.Auth,Notify.GetNumberOfNotification,instructorController.deleteAccount)
+ router.delete('/instructor/de  lete',Auth.Auth,Notify.GetNumberOfNotification,instructorController.deleteAccount)
 
  //send feedback to Admin -done look at feedback route-
 

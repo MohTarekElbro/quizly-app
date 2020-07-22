@@ -307,7 +307,8 @@ exports.Select_Question_from_Exam=async(req,res)=>{
 // Return All Exams of Instructor
 exports.ReturnMyExams= async (Id)=>{
     let exam=await Exam.find({owner:Id})
-    if (exam){
+    exam=JSON.parse(JSON.stringify(exam))
+    if (exam.length == 0){
         return 0
     }
     return exam

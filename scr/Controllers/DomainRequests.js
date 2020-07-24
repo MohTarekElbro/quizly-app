@@ -1,10 +1,10 @@
-const Request= require('../models/DomainRequests')
-const multer =require('multer')
-const socketIOClient=require('socket.io-client')
-const ENDPOINT = 'http://127.0.0.1:'+process.env.PORT;
+const Request = require('../models/DomainRequests')
+const multer = require('multer')
+const socketIOClient = require('socket.io-client')
+const ENDPOINT = 'http://127.0.0.1:' + process.env.PORT;
 const socket = socketIOClient(ENDPOINT);
 const Notification = require('./Notifications')
-exports.material=multer({
+exports.material = multer({
     dest: 'Materials',
     fileFilter(req, file, cb) {
         if (!file.originalname.match('pdf')) {
@@ -14,29 +14,29 @@ exports.material=multer({
         cb(undefined, true)
     }
 })
-exports.Send_Domain_Request=async(req,res)=>{
-    try{
-        let x= req.file.path
-         let path='.\\'+x+'.pdf'
-        
-        const request=new Request({
-            
-            requester:req.instructor._id,
-            Requested_domain:req.body.Requested_domain,
-            description:req.body.description,
-            material:path
+exports.Send_Domain_Request = async (req, res) => {
+    try {
+        let x = req.file.path
+        let path = '.\\' + x + '.pdf'
+
+        const request = new Request({
+
+            requester: req.instructor._id,
+            Requested_domain: req.body.Requested_domain,
+            description: req.body.description,
+            material: path
 
         })
 
         await request.save()
-        req.instructor.requests=request._id
+        req.instructor.requests = request._id
         await req.instructor.save()
         await Notification.addInstructorRequest('An User of email ' + req.instructor.Email + ' Want To Add A new Domain ... Where Domain Name Is ' + req.body.Requested_domain, req.instructor.Email, req.instructor._id)
-        const data= await Request.findOne({_id:request._id}).populate('requester',"Email")
+        const data = await Request.findOne({ _id: request._id }).populate('requester', "Email")
         socket.emit("requestDomain")
         res.status(201).send(data)
 
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).send(e)
     }
@@ -46,7 +46,7 @@ exports.Send_Domain_Request=async(req,res)=>{
 // exports.Vote_on_Request=async(req,res)=>{
 //     try{
 //         const requested_domain =await Request.findOne({_id:req.params.requested_domain_id})
-        
+
 //         // .populate({
 //         //     path:'requester',
 //         //     select:'Email'
@@ -78,49 +78,62 @@ exports.Send_Domain_Request=async(req,res)=>{
 //     }
 // }
 
-exports.Show_domain_Requests=async(req,res)=>{
-    try{
-        const requests=await Request.find({})
-        
-        if(requests.length===0){
+// exports.Show_domain_Requests=async(req,res)=>{
+//     try{
+//         const requests=await Request.find({})
+
+//         if(requests.length===0){
+//             res.status(404).send('No requests')
+//         }
+
+//         res.status(200).send(requests)
+
+//     }catch(e){
+//         console.log(e)
+//         res.status(500).send(e)
+//     }
+// }
+
+exports.Show_domain_Requests = async (req, res) => {
+    try {
+        const requests = await Request.find({}).populate('requester', "Email")
+        if (requests.length === 0) {
             res.status(404).send('No requests')
         }
-
         res.status(200).send(requests)
-
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).send(e)
     }
 }
-exports.deleteDomainRequest=async(req,res)=>{
-    try{
-        const request= await Request.findOne({_id:req.params.id ,requester:req.instructor._id})
-        if(!request){
+exports.deleteDomainRequest = async (req, res) => {
+    try {
+        const request = await Request.findOne({ _id: req.params.id, requester: req.instructor._id })
+        if (!request) {
             return res.status(404).send('Not Found')
         }
-    
-         req.instructor.requests=undefined
-       await req.instructor.save()
-       console.log(req.instructor.requests)
+
+        req.instructor.requests = undefined
+        await req.instructor.save()
+        console.log(req.instructor.requests)
         await request.remove()
         res.status(200).send('request removed')
 
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).send(e)
     }
 }
-exports.selectRequest=async(req,res)=>{
-    try{
-     let id=req.params.id
-        const request= await Request.findOne({_id:id})
-        if(!request){
-          return  res.status(404).send('no request to be selected')
+exports.selectRequest = async (req, res) => {
+    try {
+        let id = req.params.id
+        const request = await Request.findOne({ _id: id })
+        if (!request) {
+            return res.status(404).send('no request to be selected')
         }
         res.status(200).send(request)
 
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).send(e)
     }

@@ -24,7 +24,7 @@ const SendWelcomMessage=(sender,receiver,Frist_Name,password)=>{
         if (error) {
           console.log(error);
         } else {
-          console.log('Email sent');
+          console.log(mailOptions);
         }
 })
 }

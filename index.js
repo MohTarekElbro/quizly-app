@@ -11,7 +11,7 @@ app.use((req, res, next) => {
     // if (allowedOrigins.indexOf(origin) > -1) {
     //     res.setHeader('Access-Control-Allow-Origin', origin);
     // }
-    res.append('Access-Control-Allow-Origin', 'https://youthful-boyd-4eb098.netlify.app');
+    res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.append('Access-Control-Allow-Headers', 'Content-Type');
